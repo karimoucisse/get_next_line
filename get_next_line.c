@@ -6,7 +6,7 @@
 /*   By: kcisse <kcisse@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 18:12:36 by kcisse            #+#    #+#             */
-/*   Updated: 2024/06/19 16:26:56 by kcisse           ###   ########.fr       */
+/*   Updated: 2024/06/19 17:20:42 by kcisse           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*fill_buffer(int fd)
 	if (!buffer)
 		return (0);
 	byte_read = read(fd, buffer, BUFFER_SIZE);
-	if (byte_read <= 0)
+	if (byte_read < 0)
 	{
 		free(buffer);
 		return (0);
@@ -107,7 +107,7 @@ char	*get_next_line(int fd)
 	static char	*remain_chars;
 	t_next_line	*lst;
 	char	*str_line;
-	if (fd < 0)
+	if (fd <= 0)
 		return (0);
 	if (remain_chars)
 		buffer = remain_chars;
@@ -124,14 +124,13 @@ char	*get_next_line(int fd)
 		if(buffer)
 		{
 			if (!ft_strchr(buffer, '\n') && !fill_lst(&lst, buffer))
-					return (0);
-			else
-				handle_new_line(lst, &remain_chars, buffer);
+				return (0);
 		}
 	}
+	if(buffer && ft_strchr(buffer, '\n'))
+		handle_new_line(lst, &remain_chars, buffer);
 	str_line = (fill_str_line(lst));
 	free(buffer);
-
 	// ft_lstclear(&lst, free);
 	return (str_line);
 }
@@ -147,7 +146,7 @@ int main ()
 	while(str)
 	{
 		i++;
-		printf("%s", str);
+		// printf("%s", str);
 		str = get_next_line(fd);
 	}
 	// printf("\ntotal line = %d\n", i);
